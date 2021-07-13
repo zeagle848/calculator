@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100&family=Open+Sans+Condensed:wght@300&display=swap');
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#calculator-container{
+    background-color: #2F2F2F;
+    margin-top: 100px;
+    width: 400px;
+    height: 500px;
+    border: solid #2F2F2F 9px;
+    border-radius: 5px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 2px;
+}
+
+button{
+    font-size: 36px;
+    border-style: none;
+}
+.numeral-button:hover{
+    background-color: #f4f4f4;
+}
+
+
+.special-button{
+    background-color: #D4D3D8;
+}
+
+.special-button:hover{
+    background-color: #e2e2e2;
+}
+
+.operator-button{
+    background-color: #FA8F13;
+    color: white;
+}
+
+.operator-button:hover{
+    background-color: #f9b15e !important;
+}
+
+
+#display{
+    background-color: #1F1F1F;
+    color: white;
+    grid-column: 1/5;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-size: 70px;
+    padding: 5px;
+    font-family: 'M PLUS 1p', sans-serif;
+}
+
+#zero{
+    grid-column: 1/3;
+}
