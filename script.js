@@ -1,5 +1,10 @@
+// THE STATE OF THE PROGRAM IS THAT WHEN THE EQUALS EVENT IS TRIGGERERD AND THE PROGRAM 
+// THEN TRIES TO TRIGGER A DIFFERENT OPERATION, THE OPERATION BEFORE THE EQUAL SIGN OVERRULES 
+// THE SELECTED-OP. 
+
+
 const display = document.querySelector("#display");
-const clearButton = document.querySelector("#clear");
+const specialButtons = document.querySelectorAll(".special-button");
 const numeralButtons = document.querySelectorAll(".numeral-button");
 const operatorButtons = document.querySelectorAll(".operator-button");
 
@@ -11,14 +16,21 @@ let selectedOp ="";
 operatorButtons.forEach(button => {
     button.addEventListener("click", function(e){
         let operator = e.target.id;
-        console.log(operator);
         if(currentNum===""){ //This is for when there is no number given
 
         }else if(opSelected){ //This is for when an operator has already been selected
         
         }else if(currentNum!=="" && firstNum!==""){ //This is for when two numbers have been given and the user either wants to display the result or continue operating on an existing result
-            let result = operate(selectedOp, parseFloat(firstNum), parseFloat(currentNum));
-            
+            let result = operate(selectedOp, parseFloat(firstNum), parseFloat(currentNum)).toString(); //Compute the result of the two inputs
+            firstNum = reduceNum(result); //Make firstNum equal to our result
+            currentNum = ""; //Clear currentNum. This is because once we have the result of our two inputs we want to a) display that result or b) begin a new calculation
+            display.textContent = firstNum;
+            if(operator === "equals"){ //If the operator selected is the '=' sign then we want to display the result and make operator equal to blank
+                operator = "";
+            }else{ //When any other sign is selected we want to display the result and then make selectedOp to be the selected operator
+                selectedOp = operator;
+                opSelected = true;
+            }
         }else{
             firstNum = currentNum;
             currentNum = "";
@@ -47,13 +59,34 @@ numeralButtons.forEach(button => {
     })
 })
 
-clearButton.addEventListener("click", function(){
-    display.textContent = "0";
-    currentNum = "";
-    firstNum = "";
-    opSelected = false;
-    changeBGColor();
+specialButtons.forEach(button => {
+    button.addEventListener("click", function(e){
+        let buttonType = e.target.id;
+        if(buttonType==="clear"){
+            display.textContent = "0";
+            currentNum = "";
+            firstNum = "";
+            opSelected = false;
+            changeBGColor();
+        }else if(buttonType==="toggle-sign"){
+            current
+        }
+    })
 })
+
+clearButton.addEventListener("click", function(){
+    
+})
+
+
+
+function reduceNum(myNum){
+    let returnNum = myNum.toString();
+    if(returnNum.length >= 9){
+        returnNum = returnNum.slice(0, 9);
+    }
+    return parseFloat(returnNum);
+}
 
 function changeBGColor(){
     operatorButtons.forEach(button => {
