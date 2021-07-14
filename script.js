@@ -26,8 +26,10 @@ operatorButtons.forEach(button => {
             currentNum = ""; //Clear currentNum. This is because once we have the result of our two inputs we want to a) display that result or b) begin a new calculation
             display.textContent = firstNum;
             if(operator === "equals"){ //If the operator selected is the '=' sign then we want to display the result and make operator equal to blank
-                operator = "";
+                selectedOp = "";
+                opSelected = false;
             }else{ //When any other sign is selected we want to display the result and then make selectedOp to be the selected operator
+                button.style.backgroundColor = "#f9b15e";
                 selectedOp = operator;
                 opSelected = true;
             }
