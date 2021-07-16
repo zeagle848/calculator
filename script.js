@@ -1,3 +1,8 @@
+// THE STATE OF THE PROGRAM IS THAT WHEN THE EQUALS EVENT IS TRIGGERERD AND THE PROGRAM 
+// THEN TRIES TO TRIGGER A DIFFERENT OPERATION, THE OPERATION BEFORE THE EQUAL SIGN OVERRULES 
+// THE SELECTED-OP. 
+
+
 const display = document.querySelector("#display");
 const specialButtons = document.querySelectorAll(".special-button");
 const numeralButtons = document.querySelectorAll(".numeral-button");
