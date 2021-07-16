@@ -8,145 +8,124 @@ const specialButtons = document.querySelectorAll(".special-button");
 const numeralButtons = document.querySelectorAll(".numeral-button");
 const operatorButtons = document.querySelectorAll(".operator-button");
 
-let currentNum = "";
-let firstNum = "";
-let opSelected = false;
-let selectedOp ="";
+let currentValue;
+let leftOperand;
+let operator;
+let state;
 
-operatorButtons.forEach(button => {
-    button.addEventListener("click", function(e){
-        let operator = e.target.id;
-        if(currentNum===""){ //This is for when there is no number given
-
-        }else if(opSelected){ //This is for when an operator has already been selected
-        
-        }else if(currentNum!=="" && firstNum!==""){ //This is for when two numbers have been given and the user either wants to display the result or continue operating on an existing result
-            let result = operate(selectedOp, parseFloat(firstNum), parseFloat(currentNum)).toString(); //Compute the result of the two inputs
-            firstNum = reduceNum(result); //Make firstNum equal to our result
-            currentNum = ""; //Clear currentNum. This is because once we have the result of our two inputs we want to a) display that result or b) begin a new calculation
-            display.textContent = firstNum;
-            if(operator === "equals"){ //If the operator selected is the '=' sign then we want to display the result and make operator equal to blank
-                selectedOp = "";
-                opSelected = false;
-            }else{ //When any other sign is selected we want to display the result and then make selectedOp to be the selected operator
-                button.style.backgroundColor = "#f9b15e";
-                selectedOp = operator;
-                opSelected = true;
-            }
-        }else{
-            firstNum = currentNum;
-            currentNum = "";
-            button.style.backgroundColor = "#f9b15e";
-            opSelected = true;
-            selectedOp = operator;
-        }
-    })
-})
-
-numeralButtons.forEach(button => {
-    button.addEventListener("click", function(e){
-        let numeral = e.target.id;
-        if(currentNum.length>=9){
-
-        }else if(currentNum.length===0&&numeral==="point"){
-            currentNum+="0."
-            display.textContent = currentNum;
-        }
-        else {
-            changeBGColor();
-            currentNum += returnNum(numeral);
-            display.textContent = currentNum;
-            opSelected = false;
-        }
-    })
-})
-
-specialButtons.forEach(button => {
-    button.addEventListener("click", function(e){
-        let buttonType = e.target.id;
-        if(buttonType==="clear"){
-            display.textContent = "0";
-            currentNum = "";
-            firstNum = "";
-            opSelected = false;
-            changeBGColor();
-        }else if(buttonType==="toggle-sign"){
-            current
-        }
-    })
-})
-
-clearButton.addEventListener("click", function(){
-    
-})
-
-
-
-function reduceNum(myNum){
-    let returnNum = myNum.toString();
-    if(returnNum.length >= 9){
-        returnNum = returnNum.slice(0, 9);
-    }
-    return parseFloat(returnNum);
+function resetState() {
+    currentValue = '0';
+    leftOperand = '';
+    operator = '';
+    state = 'numCapture';
+    updateDisplay(currentValue);
 }
 
-function changeBGColor(){
+function updateDisplay(value) {
+    display.textContent = value;
+}
+
+numeralButtons.forEach((button) => {
+    button.onclick = function(event) {
+        // If the input is longer than 9 characters do nothing
+        if (currentValue.length >= 9 
+            || (event.target.value === "." && currentValue.includes("."))
+        ) return; 
+
+        if (state === 'result') {
+            leftOperand = '';
+        }
+
+        // If the state is numCapture and the current value is not 0, append currentValue with the number selected
+        if (state === 'numCapture' && currentValue !== '0') { 
+            currentValue += event.target.value;
+        } 
+        // If the current state is NOT numCapture or the initial value is 0 then make currentValue equal to number selected
+        else { 
+            if (event.target.value === ".") {
+                currentValue = "0.";
+            }
+            currentValue = event.target.value;
+        }
+
+        state = 'numCapture';
+        updateDisplay(currentValue);
+    }
+});
+
+operatorButtons.forEach((button) => {
+    button.onclick = function(event) {
+        if (state === 'numCapture') {
+            // If leftOperand is undefined or the last button pressed was equals then make leftOperand equal to currentValue
+            if (!leftOperand) { 
+                leftOperand = currentValue;
+            } 
+            // If we have just entered a number after selecting an operator then compute the result and dislay it
+            else {
+                currentValue = leftOperand = operate(operator, leftOperand, currentValue); 
+                updateDisplay(currentValue);
+            }
+        }
+        
+        state = 'operatorCapture';
+        operator = event.target.value;
+    };
+});
+
+document.getElementById('equals').onclick = function() {
+    if (leftOperand && operator) {
+        currentValue = leftOperand = operate(operator, leftOperand, currentValue);
+        updateDisplay(currentValue);
+        state = 'result';
+        operator = '';
+    }
+};
+
+document.getElementById('clear').onclick = function() {
+    resetState();
+};
+
+document.getElementById('toggle-sign').onclick = function() {
+    currentValue =
+        currentValue.includes('-') 
+        ? currentValue.substring(1, currentValue.length) 
+        : `-${currentValue}`;
+    updateDisplay(currentValue);
+    state = 'numCapture';
+};
+
+document.getElementById('percentage').onclick = function() {
+    currentValue = operate('divide', currentValue, '100');
+    state = 'numCapture';
+};
+
+function reduceFloatLength(float) {
+    let numString = float.toString();
+
+    return numString.length >= 9 
+        ? numString.slice(0, 9) 
+        : numString;
+}
+
+function changeBGColor() {
     operatorButtons.forEach(button => {
         button.style.backgroundColor = "#FA8F13";
-    })
+    });
 }
 
-function returnNum (numName){
-    switch (numName){
-        case "one":
-            return "1";
-        case "two":
-            return "2";
-        case "three":
-            return "3";
-        case "four":
-            return "4";
-        case "five":
-            return "5";
-        case "six":
-            return "6";
-        case "seven":
-            return "7";
-        case "eight":
-            return "8";
-        case "nine":
-            return "9";
-        case "zero":
-            return "0";
-        case "point":
-            return ".";
-
-    }
-}
-
-function operate(operator, a, b){
+function operate(operator, leftOperand, rightOperand) {
+    const leftOperandFloat = parseFloat(leftOperand);
+    const rightOperandFloat = parseFloat(rightOperand);
     switch (operator){
         case "add":
-            return add(a, b);
+            return reduceFloatLength(leftOperandFloat + rightOperandFloat);
         case "minus":
-            return subtract(a, b);
+            return reduceFloatLength(leftOperandFloat - rightOperandFloat);
         case "divide":
-            return divide(a, b);
+            return reduceFloatLength(leftOperandFloat / rightOperandFloat);
         case "multiply":
-            return multiply(a, b);
+            return reduceFloatLength(leftOperandFloat * rightOperandFloat);
     }
 }
 
-function add(a, b){
-    return a+b;
-}
-function subtract(a, b){
-    return a-b;
-}
-function divide(a, b){
-    return a/b;
-}
-
-function multiply(a, b){
-    return a*b;
-}
+resetState();
