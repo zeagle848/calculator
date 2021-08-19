@@ -1,7 +1,7 @@
-const display = document.querySelector("#display");
-const specialButtons = document.querySelectorAll(".special-button");
-const numeralButtons = document.querySelectorAll(".numeral-button");
-const operatorButtons = document.querySelectorAll(".operator-button");
+const display = document.querySelector('#display');
+const specialButtons = document.querySelectorAll('.special-button');
+const numeralButtons = document.querySelectorAll('.numeral-button');
+const operatorButtons = document.querySelectorAll('.operator-button');
 
 let currentValue;
 let leftOperand;
@@ -21,25 +21,24 @@ function updateDisplay(value) {
 }
 
 numeralButtons.forEach((button) => {
-    button.onclick = function(event) {
+    button.onclick = function (event) {
         // If the input is longer than 9 characters do nothing
-        if (currentValue.length >= 9 
-            || (event.target.value === "." && currentValue.includes("."))
-        ) return; 
+        if (currentValue.length >= 9 || (event.target.value === '.' && currentValue.includes('.')))
+            return;
 
         if (lastAction === 'result') {
             leftOperand = '';
         }
 
-        // If the lastAction is numCapture and the current value is not 0, append currentValue 
+        // If the lastAction is numCapture and the current value is not 0, append currentValue
         // with the number selected
-        if (lastAction === 'numCapture' && currentValue !== '0'&& currentValue!=='-0') { 
+        if (lastAction === 'numCapture' && currentValue !== '0' && currentValue !== '-0') {
             currentValue += event.target.value;
-        } 
-        // If the current lastAction is NOT numCapture or the initial value is 0 then make 
+        }
+        // If the current lastAction is NOT numCapture or the initial value is 0 then make
         // currentValue equal to number selected
-        else { 
-            if (event.target.value === ".") {
+        else {
+            if (event.target.value === '.') {
                 currentValue = `${currentValue}.`;
             }
             currentValue = event.target.value;
@@ -47,31 +46,31 @@ numeralButtons.forEach((button) => {
 
         lastAction = 'numCapture';
         updateDisplay(currentValue);
-    }
+    };
 });
 
 operatorButtons.forEach((button) => {
-    button.onclick = function(event) {
+    button.onclick = function (event) {
         if (lastAction === 'numCapture') {
-            // If leftOperand is undefined or the last button pressed was equals then make 
+            // If leftOperand is undefined or the last button pressed was equals then make
             // leftOperand equal to currentValue
-            if (!leftOperand) { 
+            if (!leftOperand) {
                 leftOperand = currentValue;
-            } 
-            // If we have just entered a number after selecting an operator then compute 
+            }
+            // If we have just entered a number after selecting an operator then compute
             // the result and dislay it
             else {
-                currentValue = leftOperand = operate(operator, leftOperand, currentValue); 
+                currentValue = leftOperand = operate(operator, leftOperand, currentValue);
                 updateDisplay(currentValue);
             }
         }
-        
+
         lastAction = 'operatorCapture';
         operator = event.target.value;
     };
 });
 
-document.getElementById('equals').onclick = function() {
+document.getElementById('equals').onclick = function () {
     if (leftOperand && operator) {
         currentValue = leftOperand = operate(operator, leftOperand, currentValue);
         updateDisplay(currentValue);
@@ -80,20 +79,19 @@ document.getElementById('equals').onclick = function() {
     }
 };
 
-document.getElementById('clear').onclick = function() {
+document.getElementById('clear').onclick = function () {
     resetState();
 };
 
-document.getElementById('toggle-sign').onclick = function() {
-    currentValue =
-        currentValue.includes('-') 
-        ? currentValue.substring(1, currentValue.length) 
+document.getElementById('toggle-sign').onclick = function () {
+    currentValue = currentValue.includes('-')
+        ? currentValue.substring(1, currentValue.length)
         : `-${currentValue}`;
     updateDisplay(currentValue);
     lastAction = 'numCapture';
 };
 
-document.getElementById('percentage').onclick = function() {
+document.getElementById('percentage').onclick = function () {
     currentValue = operate('divide', currentValue, '100');
     lastAction = 'numCapture';
     updateDisplay(currentValue);
@@ -102,28 +100,26 @@ document.getElementById('percentage').onclick = function() {
 function reduceFloatLength(float) {
     let numString = float.toString();
 
-    return numString.length >= 9 
-        ? numString.slice(0, 9) 
-        : numString;
+    return numString.length >= 9 ? numString.slice(0, 9) : numString;
 }
 
 function changeBGColor() {
-    operatorButtons.forEach(button => {
-        button.style.backgroundColor = "#FA8F13";
+    operatorButtons.forEach((button) => {
+        button.style.backgroundColor = '#FA8F13';
     });
 }
 
 function operate(operator, leftOperand, rightOperand) {
     const leftOperandFloat = parseFloat(leftOperand);
     const rightOperandFloat = parseFloat(rightOperand);
-    switch (operator){
-        case "add":
+    switch (operator) {
+        case 'add':
             return reduceFloatLength(leftOperandFloat + rightOperandFloat);
-        case "minus":
+        case 'minus':
             return reduceFloatLength(leftOperandFloat - rightOperandFloat);
-        case "divide":
+        case 'divide':
             return reduceFloatLength(leftOperandFloat / rightOperandFloat);
-        case "multiply":
+        case 'multiply':
             return reduceFloatLength(leftOperandFloat * rightOperandFloat);
     }
 }
