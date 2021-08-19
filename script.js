@@ -1,8 +1,3 @@
-// THE STATE OF THE PROGRAM IS THAT WHEN THE EQUALS EVENT IS TRIGGERERD AND THE PROGRAM 
-// THEN TRIES TO TRIGGER A DIFFERENT OPERATION, THE OPERATION BEFORE THE EQUAL SIGN OVERRULES 
-// THE SELECTED-OP. 
-
-
 const display = document.querySelector("#display");
 const specialButtons = document.querySelectorAll(".special-button");
 const numeralButtons = document.querySelectorAll(".numeral-button");
@@ -11,13 +6,13 @@ const operatorButtons = document.querySelectorAll(".operator-button");
 let currentValue;
 let leftOperand;
 let operator;
-let state;
+let lastAction;
 
 function resetState() {
     currentValue = '0';
     leftOperand = '';
     operator = '';
-    state = 'numCapture';
+    lastAction = 'numCapture';
     updateDisplay(currentValue);
 }
 
@@ -32,42 +27,46 @@ numeralButtons.forEach((button) => {
             || (event.target.value === "." && currentValue.includes("."))
         ) return; 
 
-        if (state === 'result') {
+        if (lastAction === 'result') {
             leftOperand = '';
         }
 
-        // If the state is numCapture and the current value is not 0, append currentValue with the number selected
-        if (state === 'numCapture' && currentValue !== '0') { 
+        // If the lastAction is numCapture and the current value is not 0, append currentValue 
+        // with the number selected
+        if (lastAction === 'numCapture' && currentValue !== '0'&& currentValue!=='-0') { 
             currentValue += event.target.value;
         } 
-        // If the current state is NOT numCapture or the initial value is 0 then make currentValue equal to number selected
+        // If the current lastAction is NOT numCapture or the initial value is 0 then make 
+        // currentValue equal to number selected
         else { 
             if (event.target.value === ".") {
-                currentValue = "0.";
+                currentValue = `${currentValue}.`;
             }
             currentValue = event.target.value;
         }
 
-        state = 'numCapture';
+        lastAction = 'numCapture';
         updateDisplay(currentValue);
     }
 });
 
 operatorButtons.forEach((button) => {
     button.onclick = function(event) {
-        if (state === 'numCapture') {
-            // If leftOperand is undefined or the last button pressed was equals then make leftOperand equal to currentValue
+        if (lastAction === 'numCapture') {
+            // If leftOperand is undefined or the last button pressed was equals then make 
+            // leftOperand equal to currentValue
             if (!leftOperand) { 
                 leftOperand = currentValue;
             } 
-            // If we have just entered a number after selecting an operator then compute the result and dislay it
+            // If we have just entered a number after selecting an operator then compute 
+            // the result and dislay it
             else {
                 currentValue = leftOperand = operate(operator, leftOperand, currentValue); 
                 updateDisplay(currentValue);
             }
         }
         
-        state = 'operatorCapture';
+        lastAction = 'operatorCapture';
         operator = event.target.value;
     };
 });
@@ -76,7 +75,7 @@ document.getElementById('equals').onclick = function() {
     if (leftOperand && operator) {
         currentValue = leftOperand = operate(operator, leftOperand, currentValue);
         updateDisplay(currentValue);
-        state = 'result';
+        lastAction = 'result';
         operator = '';
     }
 };
@@ -91,12 +90,13 @@ document.getElementById('toggle-sign').onclick = function() {
         ? currentValue.substring(1, currentValue.length) 
         : `-${currentValue}`;
     updateDisplay(currentValue);
-    state = 'numCapture';
+    lastAction = 'numCapture';
 };
 
 document.getElementById('percentage').onclick = function() {
     currentValue = operate('divide', currentValue, '100');
-    state = 'numCapture';
+    lastAction = 'numCapture';
+    updateDisplay(currentValue);
 };
 
 function reduceFloatLength(float) {
