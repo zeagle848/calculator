@@ -1,131 +1,134 @@
-// THE STATE OF THE PROGRAM IS THAT WHEN THE EQUALS EVENT IS TRIGGERERD AND THE PROGRAM 
-// THEN TRIES TO TRIGGER A DIFFERENT OPERATION, THE OPERATION BEFORE THE EQUAL SIGN OVERRULES 
-// THE SELECTED-OP. 
-
-
-const display = document.querySelector("#display");
-const specialButtons = document.querySelectorAll(".special-button");
-const numeralButtons = document.querySelectorAll(".numeral-button");
-const operatorButtons = document.querySelectorAll(".operator-button");
+const display = document.querySelector('#display');
+const numeralButtons = document.querySelectorAll('.numeral-button');
+const operatorButtons = document.querySelectorAll('.operator-button');
 
 let currentValue;
 let leftOperand;
 let operator;
-let state;
-
-function resetState() {
-    currentValue = '0';
-    leftOperand = '';
-    operator = '';
-    state = 'numCapture';
-    updateDisplay(currentValue);
-}
+let lastAction;
 
 function updateDisplay(value) {
     display.textContent = value;
 }
 
-numeralButtons.forEach((button) => {
-    button.onclick = function(event) {
-        // If the input is longer than 9 characters do nothing
-        if (currentValue.length >= 9 
-            || (event.target.value === "." && currentValue.includes("."))
-        ) return; 
-
-        if (state === 'result') {
-            leftOperand = '';
-        }
-
-        // If the state is numCapture and the current value is not 0, append currentValue with the number selected
-        if (state === 'numCapture' && currentValue !== '0') { 
-            currentValue += event.target.value;
-        } 
-        // If the current state is NOT numCapture or the initial value is 0 then make currentValue equal to number selected
-        else { 
-            if (event.target.value === ".") {
-                currentValue = "0.";
-            }
-            currentValue = event.target.value;
-        }
-
-        state = 'numCapture';
-        updateDisplay(currentValue);
-    }
-});
-
-operatorButtons.forEach((button) => {
-    button.onclick = function(event) {
-        if (state === 'numCapture') {
-            // If leftOperand is undefined or the last button pressed was equals then make leftOperand equal to currentValue
-            if (!leftOperand) { 
-                leftOperand = currentValue;
-            } 
-            // If we have just entered a number after selecting an operator then compute the result and dislay it
-            else {
-                currentValue = leftOperand = operate(operator, leftOperand, currentValue); 
-                updateDisplay(currentValue);
-            }
-        }
-        
-        state = 'operatorCapture';
-        operator = event.target.value;
-    };
-});
-
-document.getElementById('equals').onclick = function() {
-    if (leftOperand && operator) {
-        currentValue = leftOperand = operate(operator, leftOperand, currentValue);
-        updateDisplay(currentValue);
-        state = 'result';
-        operator = '';
-    }
-};
-
-document.getElementById('clear').onclick = function() {
-    resetState();
-};
-
-document.getElementById('toggle-sign').onclick = function() {
-    currentValue =
-        currentValue.includes('-') 
-        ? currentValue.substring(1, currentValue.length) 
-        : `-${currentValue}`;
+function resetState() {
+    currentValue = '0';
+    leftOperand = '';
+    operator = '';
+    lastAction = 'numCapture';
     updateDisplay(currentValue);
-    state = 'numCapture';
-};
-
-document.getElementById('percentage').onclick = function() {
-    currentValue = operate('divide', currentValue, '100');
-    state = 'numCapture';
-};
-
-function reduceFloatLength(float) {
-    let numString = float.toString();
-
-    return numString.length >= 9 
-        ? numString.slice(0, 9) 
-        : numString;
 }
 
-function changeBGColor() {
-    operatorButtons.forEach(button => {
-        button.style.backgroundColor = "#FA8F13";
-    });
+function parseStringForDisplay(float) {
+    const numString = float.toString();
+    const number = float;
+    const pointIndex = numString.indexOf('.');
+    if (pointIndex === -1) {
+        return numString.length >= 9 ? number.toExponential(2) : number;
+    }
+    return pointIndex >= 9 ? number.toExponential(2) : number.toFixed(2);
 }
 
 function operate(operator, leftOperand, rightOperand) {
     const leftOperandFloat = parseFloat(leftOperand);
     const rightOperandFloat = parseFloat(rightOperand);
-    switch (operator){
-        case "add":
-            return reduceFloatLength(leftOperandFloat + rightOperandFloat);
-        case "minus":
-            return reduceFloatLength(leftOperandFloat - rightOperandFloat);
-        case "divide":
-            return reduceFloatLength(leftOperandFloat / rightOperandFloat);
-        case "multiply":
-            return reduceFloatLength(leftOperandFloat * rightOperandFloat);
+
+    switch (operator) {
+        case 'add':
+            return parseStringForDisplay(leftOperandFloat + rightOperandFloat);
+        case 'minus':
+            return parseStringForDisplay(leftOperandFloat - rightOperandFloat);
+        case 'divide':
+            return parseStringForDisplay(leftOperandFloat / rightOperandFloat);
+        case 'multiply':
+            return parseStringForDisplay(leftOperandFloat * rightOperandFloat);
+        default:
+            return '';
     }
 }
+
+numeralButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+        // If the input is longer than 9 characters do nothing
+        if (
+            (currentValue.length >= 9 && lastAction === 'numCapture') ||
+            (event.target.value === '.' && currentValue.includes('.'))
+        )
+            return;
+
+        if (lastAction === 'result') {
+            leftOperand = '';
+        }
+
+        // If the lastAction is numCapture and the current value is not 0, append currentValue
+        // with the number selected
+        if (lastAction === 'numCapture' && currentValue !== '0' && currentValue !== '-0') {
+            currentValue += event.target.value;
+        }
+        // If the current lastAction is NOT numCapture or the initial value is 0 then make
+        // currentValue equal to number selected
+        else {
+            if (event.target.value === '.') {
+                currentValue = `${currentValue}.`;
+            }
+            currentValue = event.target.value;
+        }
+
+        lastAction = 'numCapture';
+        updateDisplay(currentValue);
+    });
+});
+
+operatorButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+        if (lastAction === 'numCapture') {
+            // If leftOperand is undefined or the last button pressed was equals then make
+            // leftOperand equal to currentValue
+            if (!leftOperand) {
+                leftOperand = currentValue;
+            }
+            // If we have just entered a number after selecting an operator then compute
+            // the result and dislay it
+            else {
+                leftOperand = operate(operator, leftOperand, currentValue);
+                currentValue = leftOperand;
+                updateDisplay(currentValue);
+            }
+        }
+
+        lastAction = 'operatorCapture';
+        operator = event.target.value;
+    });
+});
+
+document.getElementById('equals').addEventListener('click', () => {
+    if (leftOperand && operator) {
+        leftOperand = operate(operator, leftOperand, currentValue);
+        currentValue = leftOperand;
+
+        updateDisplay(currentValue);
+
+        lastAction = 'result';
+        operator = '';
+    }
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+    resetState();
+});
+
+document.getElementById('toggle-sign').addEventListener('click', () => {
+    currentValue = currentValue.includes('-')
+        ? currentValue.substring(1, currentValue.length)
+        : `-${currentValue}`;
+    updateDisplay(currentValue);
+    lastAction = 'numCapture';
+});
+
+document.getElementById('percentage').addEventListener('click', () => {
+    currentValue = operate('divide', currentValue, '100');
+    lastAction = 'numCapture';
+    updateDisplay(currentValue);
+});
 
 resetState();
