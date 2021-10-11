@@ -106,6 +106,89 @@ describe('My First Test', () => {
 
         shouldDisplayValue('1.00e+18');
     });
+    it('Can handle exponentials with point precision', () => {
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(8);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickOperator('multiply');
+
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickEquals();
+
+        shouldDisplayValue('1.08e+10');
+    });
+    it('Can go back and forth between exponential and normal form', () => {
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(8);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickOperator('multiply');
+
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickOperator('divide');
+
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickEquals();
+
+        shouldDisplayValue('10800000');
+    });
+    it('Can handle negative exponentials', () => {
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(8);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickNumber(0);
+        clickOperator('toggle-sign');
+
+        clickOperator('multiply');
+
+        clickNumber(1);
+        clickNumber(0);
+        clickNumber(0);
+
+        clickEquals();
+
+        shouldDisplayValue('-1.08e+10');
+    });
+    it('Can handle decimals', () => {
+        clickNumber(1);
+        clickNumber(0);
+
+        clickOperator('divide');
+
+        clickNumber(3);
+
+        clickEquals();
+
+        shouldDisplayValue('3.33');
+    });
     it('Clears previous calculation', () => {
         clickNumber(5);
         clickNumber(0);
