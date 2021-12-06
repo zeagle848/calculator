@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100&family=Shippori+Antique+B1&display=swap');
 
-.test-styling {
-    color: red;
-}
-
 body {
     display: flex;
     justify-content: center;
@@ -74,7 +70,7 @@ button {
 }
 
 .operator-button:focus {
-    background-color: red;
+    background-color: #f9b15e;
 }
 
 #display {
