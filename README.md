@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
 - [Get Started](#get-started)
 - [Development Notes](#development-notes)
+- [Testing](#testing)
 
 ## Introduction
 
@@ -54,3 +55,9 @@ If it did contain a decimal point, and the part of the number before the decimal
 Displaying the result of the original operation of 99999 * 99999 using the exponential logic, the display would read 1.00e+10. 
 
 The logic for converting exponentials also works for negative numbers.
+
+## Testing
+
+To run the testing environment we need to deploy the application first. The process is the same as what was outlined in the Getting Started section. We begin by making sure all the dependencies are installed by running `nmp install` in the console and then run the dev server by running `npm run serve`. 
+
+Once the dev server is up and running we simply run `npm run e2e` and cypress should open a window where you run the tests by clicking the `sample_spec.js` file in the same window.
