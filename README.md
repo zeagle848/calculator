@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Get Started](#get-started)
+- [Getting Started](#getting-started)
 - [Development Notes](#development-notes)
 - [Testing](#testing)
 
@@ -15,7 +15,7 @@ An important note on the functionality of the calculator - it evaluates no more 
 
 The design of the calculator is based off the iOS calculator developed by Apple.
 
-## Get Started
+## Getting Started
 
 Before we can start the live server we must first make sure that Node.js is installed. Check by opening your console and running `node -v`. If you can't see a version number you must install Node.js. 
 
