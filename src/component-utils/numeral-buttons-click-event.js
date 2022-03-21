@@ -7,7 +7,7 @@ import {
 } from '../state/calculator-state';
 import { updateDisplay } from '../utils/update-display';
 
-export function numeralButtonEvent(event) {
+export function numeralButtonsClickEvent(event) {
   // If the input is longer than 9 characters do nothing
   if (
     (getCurrentValue().length >= 9 && getLastAction() === 'numCapture') ||

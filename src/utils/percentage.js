@@ -1,6 +1,6 @@
-import { operate } from '../utils/operate';
+import { operate } from './operate';
 
-export function percentageEvent(currentValue) {
+export function calculatePercentage(currentValue) {
   return operate({
     operator: 'divide',
     leftOperand: currentValue,

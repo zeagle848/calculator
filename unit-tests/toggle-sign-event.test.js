@@ -1,13 +1,13 @@
-import { toggleSignEvent } from '../src/component-utils/toggle-sign-event';
+import { toggleSign } from '../src/utils/toggle-sign';
 
 test('Can convert positive number to negative number', () => {
-  expect(toggleSignEvent('200')).toBe('-200');
+  expect(toggleSign('200')).toBe('-200');
 });
 
 test('Can convert negative number to positive number', () => {
-  expect(toggleSignEvent('-200')).toBe('200');
+  expect(toggleSign('-200')).toBe('200');
 });
 
 test('Can handle input zero (0) ', () => {
-  expect(toggleSignEvent('0')).toBe('0');
+  expect(toggleSign('0')).toBe('0');
 });

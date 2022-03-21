@@ -10,7 +10,7 @@ import {
 import { updateDisplay } from '../../utils/update-display';
 import { operate } from '../../utils/operate';
 
-export function equalsEvent() {
+export function equalsButtonClickEvent() {
   if (getLeftOperand() && getOperator()) {
     const newLeftOperand = operate({
       operator: getOperator(),

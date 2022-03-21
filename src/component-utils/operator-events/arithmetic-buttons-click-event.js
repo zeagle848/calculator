@@ -11,7 +11,7 @@ import {
 import { operate } from '../../utils/operate';
 import { updateDisplay } from '../../utils/update-display';
 
-export function arithmeticEvent(event) {
+export function arithmeticButtonsClickEvent(event) {
   if (getLastAction() === 'numCapture') {
     if (!getLeftOperand()) {
       setLeftOperand({ value: getCurrentValue() });

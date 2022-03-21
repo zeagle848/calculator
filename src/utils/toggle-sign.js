@@ -1,4 +1,4 @@
-export function toggleSignEvent(currentValue) {
+export function toggleSign(currentValue) {
   if (currentValue === '0') {
     return '0';
   }
