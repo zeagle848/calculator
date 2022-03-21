@@ -2,7 +2,7 @@ import { shouldDisplayValue, clickNumber, clickOperator, clickEquals } from '../
 
 describe('My First Test', () => {
     beforeEach(() => {
-        cy.visit('http://127.0.0.1:5500/index.html');
+        cy.visit('http://localhost:8080/');
     });
     it('Clicks and reflects value', () => {
         clickNumber(4);
