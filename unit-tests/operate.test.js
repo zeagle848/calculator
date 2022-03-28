@@ -15,3 +15,15 @@ test('Can multiply two numbers', () => {
 test('Can divide two numbers', () => {
   expect(operate({ operator: 'divide', leftOperand: '25', rightOperand: '5' })).toBe(5);
 });
+
+test('Can convert long numbers to exponentials', () => {
+  expect(operate({ operator: 'multiply', leftOperand: '9999999', rightOperand: '9999999' })).toBe(
+    '1.00e+14',
+  );
+});
+
+test('Can convert long number to negative exponential', () => {
+  expect(operate({ operator: 'multiply', leftOperand: '-9999999', rightOperand: '9999999' })).toBe(
+    '-1.00e+14',
+  );
+});

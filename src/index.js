@@ -41,5 +41,9 @@ document.getElementById('percentage').addEventListener('click', () => {
   updateDisplay({ updateValue: getCurrentValue() });
 });
 
-resetState();
-updateDisplay({ updateValue: '0' });
+function init() {
+  resetState();
+  updateDisplay({ updateValue: '0' });
+}
+
+document.onload(init);
